@@ -25,7 +25,7 @@ This project provides an intuitive, visual way to understand how the Levenshtein
 
 ## Demo
 
-Try it out: [Live Demo]([https://your-demo-url.com](https://levenshtein-visualizer.vercel.app/))
+Try it out: [Live Demo](https://levenshtein-visualizer.vercel.app/](https://levenshtein-visualizer.vercel.app/)
 
 ## Screenshots
 
