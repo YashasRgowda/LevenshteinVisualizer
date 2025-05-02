@@ -3,6 +3,7 @@ import StandardLevenshtein from "./tabs/StandardLevenshtein";
 import WeightedLevenshtein from "./tabs/WeightedLevenshtein";
 import SpellChecker from "./tabs/SpellChecker";
 import BenchmarkTool from "./tabs/BenchmarkTool";
+import FuzzySearch from "./tabs/FuzzySearch";
 
 /**
  * Main container component for the Levenshtein Distance Visualizer application
@@ -57,6 +58,16 @@ function LevenshteinVisualizer() {
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
           <path fillRule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 17.5 9.134a1 1 0 010 1.732l-3.354 1.935-1.18 4.455a1 1 0 01-1.933 0L9.854 12.8 6.5 10.866a1 1 0 010-1.732l3.354-1.935 1.18-4.455A1 1 0 0112 2z" clipRule="evenodd" />
+        </svg>
+      )
+    },
+    {
+      id: "fuzzysearch",
+      label: "Fuzzy Search",
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M9 9a2 2 0 114 0 2 2 0 01-4 0z" />
+          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a4 4 0 00-3.446 6.032l-2.261 2.26a1 1 0 101.414 1.415l2.261-2.261A4 4 0 1011 5z" clipRule="evenodd" />
         </svg>
       )
     }
@@ -124,6 +135,10 @@ function LevenshteinVisualizer() {
             {activeTab === "benchmark" && (
               <BenchmarkTool />
             )}
+            
+            {activeTab === "fuzzysearch" && (
+              <FuzzySearch />
+            )}
           </div>
         </div>
         
@@ -140,7 +155,7 @@ function LevenshteinVisualizer() {
           />
           <InfoCard 
             title="Applications" 
-            content="Used in spell checking, DNA sequence analysis, plagiarism detection, and natural language processing to measure string similarity."
+            content="Used in spell checking, DNA sequence analysis, plagiarism detection, fuzzy search, and natural language processing to measure string similarity."
             icon={
               <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
