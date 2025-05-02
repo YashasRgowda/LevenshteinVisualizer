@@ -2,7 +2,8 @@
 
 An interactive educational tool that demonstrates and visualizes the Levenshtein distance algorithm for measuring the similarity between strings.
 
-![Levenshtein Distance Visualizer](https://levenshtein-visualizer.vercel.app/)
+## Demo
+Try it out: [Live Demo](https://levenshtein-visualizer.vercel.app/)
 
 ## Overview
 
