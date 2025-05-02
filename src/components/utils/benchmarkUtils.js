@@ -1,153 +1,111 @@
 /**
- * Benchmark utility functions for Levenshtein distance algorithm analysis
- * Provides performance testing and complexity information
+ * Utility functions for benchmarking Levenshtein algorithm performance
  */
 
-/**
- * Executes comprehensive performance tests on the Levenshtein algorithm
- * Measures execution time, matrix size, and operation counts for various test cases
- * 
- * @returns {Array} Collection of benchmark results with detailed metrics
- */
-export const runBenchmark = () => {
-  // Diverse test scenarios with varying complexity levels
-  const benchmarkScenarios = [
-    { 
-      sourceText: "a", 
-      targetText: "b", 
-      description: "Single Character - Basic substitution" 
+// Run performance tests on the Levenshtein algorithm with various inputs
+export function runBenchmark() {
+  // Define test cases with varying complexity levels
+  const testCases = [
+    {
+      description: "Simple Case",
+      str1: "cat",
+      str2: "bat",
     },
-    { 
-      sourceText: "kitten", 
-      targetText: "sitting", 
-      description: "Classic Example - Short words" 
+    {
+      description: "Medium Case",
+      str1: "kitten",
+      str2: "sitting",
     },
-    { 
-      sourceText: "algorithm", 
-      targetText: "logarithm", 
-      description: "Anagram-like - Medium complexity" 
+    {
+      description: "Medium-Large Case",
+      str1: "algorithms",
+      str2: "logarithms",
     },
-    { 
-      sourceText: "levenshtein", 
-      targetText: "meilenstein", 
-      description: "Similar Length - Different characters" 
+    {
+      description: "Large Case",
+      str1: "levenshtein",
+      str2: "meilenstein",
     },
-    { 
-      sourceText: "pneumonoultramicroscopicsilicovolcanoconiosis", 
-      targetText: "supercalifragilisticexpialidocious",
-      description: "Extreme Case - Very long words" 
+    {
+      description: "Very Large Case",
+      str1: "visualization",
+      str2: "initialization",
     },
+    {
+      description: "Complex Case",
+      str1: "computational",
+      str2: "combinatorial",
+    }
   ];
 
-  const performanceResults = [];
-
-  // Execute each test case and measure performance
-  benchmarkScenarios.forEach((scenario) => {
-    // Capture precise timing data
-    const startTimestamp = performance.now();
-    const algorithmResult = executeOptimizedLevenshtein(scenario.sourceText, scenario.targetText);
-    const endTimestamp = performance.now();
-    const processingTime = endTimestamp - startTimestamp;
-
-    // Record comprehensive performance metrics
-    performanceResults.push({
-      str1: scenario.sourceText,
-      str2: scenario.targetText,
-      description: scenario.description,
-      distance: algorithmResult.distance,
-      executionTime: processingTime.toFixed(2),
-      matrixSize: (scenario.sourceText.length + 1) * (scenario.targetText.length + 1),
-      operationsCount: algorithmResult.operationsCount
-    });
+  // Execute and time the algorithm for each test case
+  const results = testCases.map(testCase => {
+    const { str1, str2, description } = testCase;
+    
+    // Measure execution time
+    const startTime = performance.now();
+    const { distance, matrix } = calculateLevenshteinDistance(str1, str2);
+    const endTime = performance.now();
+    
+    // Format execution time with one decimal place
+    const executionTime = (endTime - startTime).toFixed(1);
+    
+    // Calculate matrix dimensions for complexity analysis
+    const matrixSize = `${str1.length + 1}x${str2.length + 1}`;
+    
+    return {
+      description,
+      str1,
+      str2,
+      distance,
+      matrixSize,
+      executionTime
+    };
   });
 
-  return performanceResults;
-};
+  return results;
+}
 
-/**
- * Performance-optimized implementation of Levenshtein distance calculation
- * Streamlined version without path tracing for maximum speed
- * 
- * @param {string} sourceText - Original string
- * @param {string} targetText - Target string
- * @returns {Object} Distance value and operation count metrics
- */
-const executeOptimizedLevenshtein = (sourceText, targetText) => {
-  const sourceLength = sourceText.length;
-  const targetLength = targetText.length;
-  let operationCounter = 0;
+// Get complexity analysis information for educational display
+export function getComplexityAnalysis() {
+  return {
+    timeComplexity: "O(m×n) where m and n are the lengths of the two strings. The algorithm builds a matrix of size (m+1)×(n+1) and fills each cell exactly once.",
+    spaceComplexity: "O(m×n) due to the dynamic programming matrix required to store intermediate results during computation.",
+    optimizationNote: "For long strings, memory usage can be optimized to O(min(m,n)) by only storing the current and previous rows of the matrix, as each cell only depends on its neighbors.",
+    practicalConsiderations: "Performance degrades quadratically with string length. Consider specialized algorithms for very long strings (e.g., DNA sequences) or approximate methods for fuzzy matching at scale."
+  };
+}
 
-  // Initialize distance matrix
-  const distanceMatrix = Array(sourceLength + 1)
-    .fill()
-    .map(() => Array(targetLength + 1).fill(0));
-
-  // Setup base cases (transformation to/from empty string)
-  for (let i = 0; i <= sourceLength; i++) {
-    distanceMatrix[i][0] = i;
-    operationCounter++;
+// Implementation of the Levenshtein distance algorithm for benchmarking
+function calculateLevenshteinDistance(source, target) {
+  // Create matrix of dimensions (source.length + 1) x (target.length + 1)
+  const matrix = Array(source.length + 1).fill().map(() => Array(target.length + 1).fill(0));
+  
+  // Initialize first row and column
+  for (let i = 0; i <= source.length; i++) {
+    matrix[i][0] = i;
   }
-
-  for (let j = 0; j <= targetLength; j++) {
-    distanceMatrix[0][j] = j;
-    operationCounter++;
+  
+  for (let j = 0; j <= target.length; j++) {
+    matrix[0][j] = j;
   }
-
-  // Fill matrix using dynamic programming approach
-  for (let i = 1; i <= sourceLength; i++) {
-    for (let j = 1; j <= targetLength; j++) {
-      operationCounter++;
+  
+  // Fill the matrix
+  for (let i = 1; i <= source.length; i++) {
+    for (let j = 1; j <= target.length; j++) {
+      const cost = source[i - 1] === target[j - 1] ? 0 : 1;
       
-      if (sourceText[i - 1] === targetText[j - 1]) {
-        // Characters match - no operation needed
-        distanceMatrix[i][j] = distanceMatrix[i - 1][j - 1];
-      } else {
-        // Choose minimum cost operation
-        distanceMatrix[i][j] = Math.min(
-          distanceMatrix[i - 1][j - 1] + 1, // Replace operation
-          distanceMatrix[i][j - 1] + 1,     // Insert operation
-          distanceMatrix[i - 1][j] + 1      // Delete operation
-        );
-      }
+      matrix[i][j] = Math.min(
+        matrix[i - 1][j] + 1,        // deletion
+        matrix[i][j - 1] + 1,        // insertion
+        matrix[i - 1][j - 1] + cost  // substitution
+      );
     }
   }
-
+  
+  // Return the final distance and the complete matrix
   return {
-    distance: distanceMatrix[sourceLength][targetLength],
-    operationsCount: operationCounter
+    distance: matrix[source.length][target.length],
+    matrix
   };
-};
-
-/**
- * Provides detailed algorithmic complexity analysis and optimization insights
- * Includes theoretical complexity bounds and practical performance considerations
- * 
- * @returns {Object} Comprehensive complexity information
- */
-export const getComplexityAnalysis = () => {
-  return {
-    timeComplexity: "O(n×m) where n and m represent the lengths of the two input strings",
-    spaceComplexity: "O(n×m) for the standard implementation using a complete matrix",
-    optimizationNote: "Space complexity can be reduced to O(min(n,m)) by only storing the current and previous rows of the matrix",
-    asymptotic: "For strings of similar length n, the worst-case time complexity approaches O(n²)",
-    practicalConsiderations: "Performance degrades quadratically for longer inputs. Consider approximation algorithms for strings exceeding several hundred characters."
-  };
-};
-
-/**
- * Provides statistics about algorithm scaling for visualization
- * Shows how performance changes with increasing input sizes
- * 
- * @returns {Object} Scaling metrics for visualization
- */
-export const getScalingMetrics = () => {
-  return {
-    inputSizeProgression: [5, 10, 20, 50, 100, 200, 500],
-    theoreticalTimeScaling: [25, 100, 400, 2500, 10000, 40000, 250000],
-    theoreticalSpaceScaling: [25, 100, 400, 2500, 10000, 40000, 250000],
-    optimizedSpaceScaling: [5, 10, 20, 50, 100, 200, 500],
-    notes: "Values represent approximate operation counts for strings of equal length"
-  };
-};
-
-export default { runBenchmark, getComplexityAnalysis, getScalingMetrics };
+}
