@@ -24,8 +24,7 @@ This project provides an intuitive, visual way to understand how the Levenshtein
 - HTML5 Canvas (for charts and visualizations)
 
 ## Demo
-
-Try it out: [Live Demo](https://levenshtein-visualizer.vercel.app/](https://levenshtein-visualizer.vercel.app/)
+Try it out: [Live Demo](https://levenshtein-visualizer.vercel.app/)
 
 ## Screenshots
 
